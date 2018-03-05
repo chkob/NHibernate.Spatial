@@ -19,6 +19,11 @@ using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using System;
+using System.Data;
+using System.Data.Common;
+using NHibernate.Engine;
+using NHibernate.SqlTypes;
+using NHibernate.Type;
 
 namespace NHibernate.Spatial.Type
 {
@@ -31,11 +36,13 @@ namespace NHibernate.Spatial.Type
     [Serializable]
     public class PostGisGeometryType : GeometryTypeBase<string>
     {
+        private static readonly NullableType GeometryType = new CustomGeometryType();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PostGisGeometryType"/> class.
         /// </summary>
         public PostGisGeometryType()
-            : base(NHibernateUtil.StringClob)
+            : base(GeometryType)
         {
         }
 
@@ -99,21 +106,6 @@ namespace NHibernate.Spatial.Type
                 return null;
             }
 
-            // Bounding boxes are not serialized as hexadecimal string (?)
-            const string boxToken = "BOX(";
-            if (bytes.StartsWith(boxToken))
-            {
-                // TODO: Optimize?
-                bytes = bytes.Substring(boxToken.Length, bytes.Length - boxToken.Length - 1);
-                string[] parts = bytes.Split(',');
-                string[] min = parts[0].Split(' ');
-                string[] max = parts[1].Split(' ');
-                string wkt = string.Format(
-                    "POLYGON(({0} {1},{0} {3},{2} {3},{2} {1},{0} {1}))",
-                    min[0], min[1], max[0], max[1]);
-                return new WKTReader().Read(wkt);
-            }
-
             PostGisReader reader = new PostGisReader();
             IGeometry geometry = reader.Read(ToByteArray(bytes));
             this.SetDefaultSRID(geometry);
@@ -151,6 +143,49 @@ namespace NHibernate.Spatial.Type
                 data[idx++] = (char)((n2) < 10 ? '0' + n2 : n2 - 10 + 'A');
             }
             return new string(data);
+        }
+
+        [Serializable]
+        private class CustomGeometryType : AbstractStringType
+        {
+            public CustomGeometryType() : base(new StringSqlType())
+            {
+            }
+
+            public override object Get(DbDataReader rs, int index, ISessionImplementor session)
+            {
+                // Npgsql 2 retrieves geometry objects as strings.
+                if (rs[index] is string value)
+                {
+                    return value;
+                }
+                // Npgsql 3 from the received bytes creates his own PostGisGeometry type.
+                // As we need to return a string that represents the geometry object,
+                // we will retrive the bytes instead.
+                var length = (int)rs.GetBytes(index, 0, null, 0, 0);
+                var buffer = new byte[length];
+                if (length > 0)
+                {
+                    rs.GetBytes(index, 0, buffer, 0, length);
+                }
+                return PostGisGeometryType.ToString(buffer);
+            }
+
+            public override object Get(DbDataReader rs, string name, ISessionImplementor session)
+            {
+                return Get(rs, rs.GetOrdinal(name), session);
+            }
+
+            public override System.Type ReturnedClass => typeof(IGeometry);
+
+            public override void Set(DbCommand cmd, object value, int index, ISessionImplementor session)
+            {
+                var parameter = cmd.Parameters[index];
+                parameter.Value = value;
+            }
+
+            public override string Name => "Geometry";
+
         }
     }
 }
