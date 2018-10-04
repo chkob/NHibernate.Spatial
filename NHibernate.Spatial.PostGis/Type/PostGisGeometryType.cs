@@ -24,8 +24,6 @@ using System.Data.Common;
 using NHibernate.Engine;
 using NHibernate.SqlTypes;
 using NHibernate.Type;
-using Npgsql;
-using NpgsqlTypes;
 
 namespace NHibernate.Spatial.Type
 {
@@ -140,24 +138,29 @@ namespace NHibernate.Spatial.Type
         }
 
         [Serializable]
-        private class CustomGeometryType : MutableType
+        private class CustomGeometryType : AbstractStringType
         {
-            internal CustomGeometryType() : base(new BinarySqlType())
+            public CustomGeometryType() : base(new StringSqlType())
             {
             }
 
             public override object Get(DbDataReader rs, int index, ISessionImplementor session)
             {
+                // Npgsql 2 retrieves geometry objects as strings.
+                if (rs[index] is string value)
+                {
+                    return value;
+                }
                 // Npgsql 3 from the received bytes creates his own PostGisGeometry type.
-                // As we need to return a byte array that represents the geometry object,
-                // we will retrive the bytes from the reader instead.
+                // As we need to return a string that represents the geometry object,
+                // we will retrive the bytes instead.
                 var length = (int)rs.GetBytes(index, 0, null, 0, 0);
                 var buffer = new byte[length];
                 if (length > 0)
                 {
                     rs.GetBytes(index, 0, buffer, 0, length);
                 }
-                return buffer;
+                return PostGisGeometryType.ToString(buffer);
             }
 
             public override object Get(DbDataReader rs, string name, ISessionImplementor session)
@@ -165,32 +168,16 @@ namespace NHibernate.Spatial.Type
                 return Get(rs, rs.GetOrdinal(name), session);
             }
 
-            public override string ToString(object val)
-            {
-                return PostGisGeometryType.ToString((byte[])val);
-            }
-
-            public override object FromStringValue(string xml)
-            {
-                return ToByteArray(xml);
-            }
-
             public override System.Type ReturnedClass => typeof(IGeometry);
 
             public override void Set(DbCommand cmd, object value, int index, ISessionImplementor session)
             {
-                var parameter = (NpgsqlParameter)cmd.Parameters[index];
-                parameter.NpgsqlDbType = NpgsqlDbType.Geometry;
+                var parameter = cmd.Parameters[index];
                 parameter.Value = value;
             }
 
             public override string Name => "Geometry";
 
-            public override object DeepCopyNotNull(object value)
-            {
-                var arr = (byte[]) value;
-                return arr.Clone();
-            }
         }
     }
 }
