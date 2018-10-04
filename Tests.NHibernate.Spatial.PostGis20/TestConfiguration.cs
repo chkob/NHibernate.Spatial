@@ -3,6 +3,8 @@ using NHibernate.Cfg;
 using NHibernate.Driver;
 using NHibernate.Spatial.Dialect;
 using System.Collections.Generic;
+using NHibernate.Spatial;
+using Npgsql;
 using Environment = NHibernate.Cfg.Environment;
 using NHibernateFactory = NHibernate.Bytecode.DefaultProxyFactoryFactory;
 using Settings = Tests.NHibernate.Spatial.Properties.Settings;
@@ -21,6 +23,8 @@ namespace Tests.NHibernate.Spatial
             properties[Environment.ConnectionString] = Tests.NHibernate.Spatial.Properties.Settings.Default.ConnectionString;
             //properties[Environment.Hbm2ddlAuto] = "create-drop";
             configuration.SetProperties(properties);
+            // Setup handler for Npgsql
+            NpgsqlConnection.GlobalTypeMapper.UsePostGis();
         }
     }
 }
