@@ -15,7 +15,7 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using Microsoft.SqlServer.Types;
 using System;
 
@@ -25,76 +25,76 @@ namespace NHibernate.Spatial.Type
     {
         private readonly SqlGeometryBuilder builder = new SqlGeometryBuilder();
 
-        public SqlGeometry Write(IGeometry geometry)
+        public SqlGeometry Write(Geometry geometry)
         {
             builder.SetSrid(geometry.SRID);
             AddGeometry(geometry);
             return builder.ConstructedGeometry;
         }
 
-        private void AddGeometry(IGeometry geometry)
+        private void AddGeometry(Geometry geometry)
         {
-            if (geometry is IPoint)
+            if (geometry is Point)
             {
                 AddPoint(geometry);
             }
-            else if (geometry is ILineString)
+            else if (geometry is LineString)
             {
                 AddLineString(geometry);
             }
-            else if (geometry is IPolygon)
+            else if (geometry is Polygon)
             {
                 AddPolygon(geometry);
             }
-            else if (geometry is IMultiPoint)
+            else if (geometry is MultiPoint)
             {
                 AddGeometryCollection(geometry, OpenGisGeometryType.MultiPoint);
             }
-            else if (geometry is IMultiLineString)
+            else if (geometry is MultiLineString)
             {
                 AddGeometryCollection(geometry, OpenGisGeometryType.MultiLineString);
             }
-            else if (geometry is IMultiPolygon)
+            else if (geometry is MultiPolygon)
             {
                 AddGeometryCollection(geometry, OpenGisGeometryType.MultiPolygon);
             }
-            else if (geometry is IGeometryCollection)
+            else if (geometry is GeometryCollection)
             {
                 AddGeometryCollection(geometry, OpenGisGeometryType.GeometryCollection);
             }
         }
 
-        private void AddGeometryCollection(IGeometry geometry, OpenGisGeometryType type)
+        private void AddGeometryCollection(Geometry geometry, OpenGisGeometryType type)
         {
             builder.BeginGeometry(type);
-            IGeometryCollection coll = geometry as IGeometryCollection;
-            Array.ForEach<IGeometry>(coll.Geometries, delegate(IGeometry g)
+            GeometryCollection coll = geometry as GeometryCollection;
+            Array.ForEach<Geometry>(coll.Geometries, delegate(Geometry g)
             {
                 AddGeometry(g);
             });
             builder.EndGeometry();
         }
 
-        private void AddPolygon(IGeometry geometry)
+        private void AddPolygon(Geometry geometry)
         {
             builder.BeginGeometry(OpenGisGeometryType.Polygon);
-            IPolygon polygon = geometry as IPolygon;
+            Polygon polygon = geometry as Polygon;
             AddCoordinates(polygon.ExteriorRing.Coordinates);
-            Array.ForEach<ILineString>(polygon.InteriorRings, delegate(ILineString ring)
+            Array.ForEach<LineString>(polygon.InteriorRings, delegate(LineString ring)
             {
                 AddCoordinates(ring.Coordinates);
             });
             builder.EndGeometry();
         }
 
-        private void AddLineString(IGeometry geometry)
+        private void AddLineString(Geometry geometry)
         {
             builder.BeginGeometry(OpenGisGeometryType.LineString);
             AddCoordinates(geometry.Coordinates);
             builder.EndGeometry();
         }
 
-        private void AddPoint(IGeometry geometry)
+        private void AddPoint(Geometry geometry)
         {
             builder.BeginGeometry(OpenGisGeometryType.Point);
             AddCoordinates(geometry.Coordinates);

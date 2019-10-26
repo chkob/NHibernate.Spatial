@@ -15,7 +15,6 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-using GeoAPI.Geometries;
 using Microsoft.SqlServer.Types;
 using NetTopologySuite.Geometries;
 using System;
@@ -25,15 +24,15 @@ namespace NHibernate.Spatial.Type
 {
     internal class NtsGeographySink : IGeographySink110
     {
-        private IGeometry geometry;
+        private Geometry geometry;
         private int srid;
         private readonly Stack<OpenGisGeographyType> types = new Stack<OpenGisGeographyType>();
         private List<Coordinate> coordinates = new List<Coordinate>();
         private readonly List<Coordinate[]> rings = new List<Coordinate[]>();
-        private readonly List<IGeometry> geometries = new List<IGeometry>();
+        private readonly List<Geometry> geometries = new List<Geometry>();
         private bool inFigure;
 
-        public IGeometry ConstructedGeometry
+        public Geometry ConstructedGeometry
         {
             get { return this.geometry; }
         }
@@ -43,7 +42,7 @@ namespace NHibernate.Spatial.Type
             Coordinate coordinate;
             if (z.HasValue)
             {
-                coordinate = new Coordinate(y, x, z.Value);
+                coordinate = new CoordinateZ(y, x, z.Value);
             }
             else
             {
@@ -91,7 +90,7 @@ namespace NHibernate.Spatial.Type
 
         public void EndGeography()
         {
-            IGeometry geometry = null;
+            Geometry geometry = null;
 
             OpenGisGeographyType type = this.types.Pop();
 
@@ -142,7 +141,7 @@ namespace NHibernate.Spatial.Type
             throw new NotImplementedException();
         }
 
-        private IGeometry BuildPoint()
+        private Geometry BuildPoint()
         {
             return new Point(this.coordinates[0]);
         }
@@ -152,16 +151,16 @@ namespace NHibernate.Spatial.Type
             return new LineString(this.coordinates.ToArray());
         }
 
-        private IGeometry BuildPolygon()
+        private Geometry BuildPolygon()
         {
             if (this.rings.Count == 0)
             {
                 return Polygon.Empty;
             }
-            ILinearRing shell = new LinearRing(this.rings[0]);
-            ILinearRing[] holes =
+            LinearRing shell = new LinearRing(this.rings[0]);
+            LinearRing[] holes =
                 this.rings.GetRange(1, this.rings.Count - 1)
-                    .ConvertAll<ILinearRing>(delegate(Coordinate[] coordinates)
+                    .ConvertAll<LinearRing>(delegate(Coordinate[] coordinates)
                     {
                         return new LinearRing(coordinates);
                     }).ToArray();
@@ -169,32 +168,32 @@ namespace NHibernate.Spatial.Type
             return new Polygon(shell, holes);
         }
 
-        private IGeometry BuildMultiPoint()
+        private Geometry BuildMultiPoint()
         {
-            IPoint[] points =
-                this.geometries.ConvertAll<IPoint>(delegate(IGeometry g)
+            Point[] points =
+                this.geometries.ConvertAll<Point>(delegate(Geometry g)
                 {
-                    return g as IPoint;
+                    return g as Point;
                 }).ToArray();
             return new MultiPoint(points);
         }
 
-        private IGeometry BuildMultiLineString()
+        private Geometry BuildMultiLineString()
         {
-            ILineString[] lineStrings =
-                this.geometries.ConvertAll<ILineString>(delegate(IGeometry g)
+            LineString[] lineStrings =
+                this.geometries.ConvertAll<LineString>(delegate(Geometry g)
                 {
-                    return g as ILineString;
+                    return g as LineString;
                 }).ToArray();
             return new MultiLineString(lineStrings);
         }
 
-        private IGeometry BuildMultiPolygon()
+        private Geometry BuildMultiPolygon()
         {
-            IPolygon[] polygons =
-                this.geometries.ConvertAll<IPolygon>(delegate(IGeometry g)
+            Polygon[] polygons =
+                this.geometries.ConvertAll<Polygon>(delegate(Geometry g)
                 {
-                    return g as IPolygon;
+                    return g as Polygon;
                 }).ToArray();
             return new MultiPolygon(polygons);
         }

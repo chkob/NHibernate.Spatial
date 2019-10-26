@@ -1,4 +1,4 @@
-﻿using GeoAPI.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System;
 
 namespace Open.Topology.TestRunner.Functions
@@ -48,7 +48,7 @@ namespace Open.Topology.TestRunner.Functions
         /// <param name="geom">The target geometry</param>
         /// <param name="args">The other arguments to the function</param>
         /// <returns>The value computed by the function</returns>
-        Object Invoke(IGeometry geom, Object[] args);
+        Object Invoke(Geometry geom, Object[] args);
 
         ///**
         // * Two functions are the same if they have the

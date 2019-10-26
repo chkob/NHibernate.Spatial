@@ -1,4 +1,4 @@
-﻿using GeoAPI.Geometries;
+﻿using NetTopologySuite;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using System;
@@ -37,13 +37,13 @@ namespace Open.Topology.TestRunner.Utility
         private readonly WKBReader _wkbReader;
 
         public WKTOrWKBReader()
-            : this(new GeometryFactory())
+            : this(new NtsGeometryServices())
         {
         }
 
-        public WKTOrWKBReader(GeometryFactory geomFactory)
+        public WKTOrWKBReader(NtsGeometryServices geomFactory)
         {
-            _wktReader = new WKTReader(geomFactory);
+            _wktReader = new WKTReader(geomFactory.CreateGeometryFactory());
 #pragma warning disable 612
             _wkbReader = new WKBReader(geomFactory);
 #pragma warning restore 612
@@ -55,7 +55,7 @@ namespace Open.Topology.TestRunner.Utility
         /// <param name="geomStr"></param>
         /// <returns></returns>
         /// <exception cref="ParseException"></exception>
-        public IGeometry Read(String geomStr)
+        public Geometry Read(String geomStr)
         {
             String trimStr = geomStr.Trim();
             if (IsHex(trimStr, MaxCharsToCheck))

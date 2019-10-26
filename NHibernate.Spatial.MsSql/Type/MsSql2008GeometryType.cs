@@ -15,7 +15,7 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using Microsoft.SqlServer.Types;
 using NHibernate.Type;
 using System;
@@ -42,7 +42,7 @@ namespace NHibernate.Spatial.Type
         /// Sets the default SRID.
         /// </summary>
         /// <param name="geometry">The geometry.</param>
-        protected override void SetDefaultSRID(IGeometry geometry)
+        protected override void SetDefaultSRID(Geometry geometry)
         {
             base.SetDefaultSRID(geometry);
             if (geometry.SRID == -1)
@@ -58,7 +58,7 @@ namespace NHibernate.Spatial.Type
         /// <returns></returns>
         protected override SqlGeometry FromGeometry(object value)
         {
-            IGeometry geometry = value as IGeometry;
+            Geometry geometry = value as Geometry;
             if (geometry == null)
             {
                 return SqlGeometry.Null;
@@ -88,7 +88,7 @@ namespace NHibernate.Spatial.Type
         /// </summary>
         /// <param name="value">The databse geometry value.</param>
         /// <returns></returns>
-        protected override IGeometry ToGeometry(object value)
+        protected override Geometry ToGeometry(object value)
         {
             SqlGeometry sqlGeometry = value as SqlGeometry;
 
@@ -98,7 +98,7 @@ namespace NHibernate.Spatial.Type
             }
 
             MsSql2008GeometryReader reader = new MsSql2008GeometryReader();
-            IGeometry geometry = reader.Read(sqlGeometry);
+            Geometry geometry = reader.Read(sqlGeometry);
             SetDefaultSRID(geometry);
             return geometry;
         }

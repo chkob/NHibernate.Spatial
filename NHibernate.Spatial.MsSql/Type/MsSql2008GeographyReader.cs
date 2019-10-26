@@ -15,7 +15,7 @@
 // along with NHibernate.Spatial; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using Microsoft.SqlServer.Types;
 using System.IO;
 
@@ -23,7 +23,7 @@ namespace NHibernate.Spatial.Type
 {
     internal class MsSql2008GeographyReader
     {
-        public IGeometry Read(byte[] bytes)
+        public Geometry Read(byte[] bytes)
         {
             using (MemoryStream stream = new MemoryStream(bytes))
             {
@@ -36,7 +36,7 @@ namespace NHibernate.Spatial.Type
             }
         }
 
-        public IGeometry Read(SqlGeography geometry)
+        public Geometry Read(SqlGeography geometry)
         {
             NtsGeographySink builder = new NtsGeographySink();
             geometry.Populate(builder);

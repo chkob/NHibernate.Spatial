@@ -1,4 +1,4 @@
-﻿using GeoAPI.Geometries;
+﻿using NetTopologySuite;
 using NetTopologySuite.Geometries;
 
 namespace Open.Topology.TestRunner.Utility
@@ -7,15 +7,16 @@ namespace Open.Topology.TestRunner.Utility
     {
         public static readonly Envelope DefaultEnvelope = new Envelope(0, 100, 0, 100);
 
-        public static Envelope getEnvelopeOrDefault(IGeometry g)
+        public static Envelope getEnvelopeOrDefault(Geometry g)
         {
             if (g == null) return DefaultEnvelope;
             return g.EnvelopeInternal;
         }
 
-        private static readonly IGeometryFactory Factory = new GeometryFactory();
+        private static readonly NtsGeometryServices ntsGeometryServices = new NtsGeometryServices();
+        private static readonly GeometryFactory Factory = ntsGeometryServices.CreateGeometryFactory();
 
-        public static IGeometryFactory getFactoryOrDefault(IGeometry g)
+        public static GeometryFactory getFactoryOrDefault(Geometry g)
         {
             if (g == null) return Factory; /*NTSTestBuilder.getGeometryFactory()*/;
             return g.Factory;
