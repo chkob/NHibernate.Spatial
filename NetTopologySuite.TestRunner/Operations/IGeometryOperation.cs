@@ -24,7 +24,7 @@ namespace Open.Topology.TestRunner.Operations
         Type GetReturnType(XmlTestType opName);
 
         /// <summary>
-        /// Invokes an operation on a <see cref="IGeometry"/>.
+        /// Invokes an operation on a <see cref="Geometry"/>.
         /// </summary>
         /// <param name="opName">The name of the operation</param>
         /// <param name="geometry">The geometry to process</param>

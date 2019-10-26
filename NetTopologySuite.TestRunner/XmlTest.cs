@@ -1,5 +1,6 @@
 using NetTopologySuite.Geometries;
 using NetTopologySuite.Operation.Buffer;
+using NetTopologySuite.Precision;
 using Open.Topology.TestRunner.Operations;
 using Open.Topology.TestRunner.Result;
 using System;

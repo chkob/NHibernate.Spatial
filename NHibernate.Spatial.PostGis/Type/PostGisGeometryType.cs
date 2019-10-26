@@ -18,7 +18,6 @@
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using System;
-using System.Data;
 using System.Data.Common;
 using NHibernate.Engine;
 using NHibernate.SqlTypes;

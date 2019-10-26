@@ -1,6 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
-using NetTopologySuite.Operation.Buffer;
 using NetTopologySuite.IO;
+using NetTopologySuite.Operation.Buffer;
 using NetTopologySuite.Operation.Buffer.Validate;
 using NetTopologySuite.Utilities;
 using Open.Topology.TestRunner.Result;
@@ -10,7 +10,7 @@ namespace Open.Topology.TestRunner.Operations
 {
     /// <summary>
     /// A <see cref="IGeometryOperation"/> which validates the results of the
-    /// <see cref="IGeometry"/> <tt>buffer()</tt> method.
+    /// <see cref="Geometry"/> <tt>buffer()</tt> method.
     /// If an invalid result is found, an exception is thrown (this is the most
     /// convenient and noticeable way of flagging the problem when using the TestRunner).
     /// All other Geometry methods are executed normally.

@@ -3,11 +3,11 @@ using NHibernate.Hql.Ast;
 using NHibernate.Linq.Functions;
 using NHibernate.Linq.Visitors;
 using NHibernate.Spatial.Dialect;
+using NHibernate.Util;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using NHibernate.Util;
 
 namespace NHibernate.Spatial.Linq.Functions
 {

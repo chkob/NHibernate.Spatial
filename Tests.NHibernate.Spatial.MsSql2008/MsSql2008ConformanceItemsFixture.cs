@@ -1,6 +1,5 @@
 ﻿using NetTopologySuite.Geometries;
 using NHibernate.Cfg;
-using NHibernate.Linq;
 using NUnit.Framework;
 using System.Linq;
 using Tests.NHibernate.Spatial.OgcSfSql11Compliance;

@@ -20,8 +20,8 @@ namespace Open.Topology.TestRunner.Operations
 
         public bool Match(Geometry a, Geometry b)
         {
-            var aClone = (Geometry)a.Copy();
-            var bClone = (Geometry)b.Copy();
+            var aClone = a.Copy();
+            var bClone = b.Copy();
             aClone.Normalize();
             bClone.Normalize();
             return aClone.EqualsExact(bClone, _tolerance);

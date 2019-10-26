@@ -5,7 +5,7 @@ namespace Open.Topology.TestRunner.Functions
 {
     /// <summary>
     /// A reification of a function which can be executed on a
-    /// <see cref="IGeometry"/>, possibly with other arguments.
+    /// <see cref="Geometry"/>, possibly with other arguments.
     /// The function may return a Geometry or a scalar value.
     /// </summary>
     /// <author>Martin Davis</author>

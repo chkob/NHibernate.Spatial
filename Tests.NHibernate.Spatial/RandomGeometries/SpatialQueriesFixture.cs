@@ -5,7 +5,6 @@ using NHibernate.Spatial.Dialect;
 using NUnit.Framework;
 using System;
 using System.Collections;
-using System.Data;
 using Tests.NHibernate.Spatial.RandomGeometries.Model;
 
 namespace Tests.NHibernate.Spatial.RandomGeometries

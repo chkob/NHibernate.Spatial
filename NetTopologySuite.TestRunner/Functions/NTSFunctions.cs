@@ -1,7 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 using NetTopologySuite.Operation.Buffer;
 using NetTopologySuite.Utilities;
-using Open.Topology.TestRunner.Utility;
 using System;
 
 namespace Open.Topology.TestRunner.Functions

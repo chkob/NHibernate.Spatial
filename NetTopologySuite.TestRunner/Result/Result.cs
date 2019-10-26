@@ -132,8 +132,8 @@ namespace Open.Topology.TestRunner.Result
             var otherGeometryResult = (IResult<Geometry>)other;
             var otherGeometry = otherGeometryResult.Value;
 
-            var thisGeometryClone = (Geometry)Value.Copy();
-            var otherGeometryClone = (Geometry)otherGeometry.Copy();
+            var thisGeometryClone = Value.Copy();
+            var otherGeometryClone = otherGeometry.Copy();
             thisGeometryClone.Normalize();
             otherGeometryClone.Normalize();
 

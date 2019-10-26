@@ -2,10 +2,10 @@
 using NHibernate.Hql.Ast;
 using NHibernate.Linq.Functions;
 using NHibernate.Linq.Visitors;
+using NHibernate.Util;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
-using NHibernate.Util;
 
 namespace NHibernate.Spatial.Linq.Functions
 {

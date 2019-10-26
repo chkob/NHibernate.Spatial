@@ -6,7 +6,7 @@ using System;
 namespace Open.Topology.TestRunner.Utility
 {
     /// <summary>
-    /// Reads a <seealso cref="IGeometry"/> from a string which is in either WKT or WKBHex format
+    /// Reads a <seealso cref="Geometry"/> from a string which is in either WKT or WKBHex format
     /// </summary>
     public class WKTOrWKBReader
     {
@@ -45,7 +45,7 @@ namespace Open.Topology.TestRunner.Utility
         {
             _wktReader = new WKTReader(geomFactory.CreateGeometryFactory());
 #pragma warning disable 612
-            _wkbReader = new WKBReader(geomFactory);
+            _wkbReader = new WKBReader();
 #pragma warning restore 612
         }
 

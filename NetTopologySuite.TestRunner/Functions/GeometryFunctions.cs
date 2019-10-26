@@ -49,7 +49,7 @@ namespace Open.Topology.TestRunner.Functions
 
         public static Geometry normalize(Geometry g)
         {
-            Geometry gNorm = (Geometry)g.Copy();
+            Geometry gNorm = g.Copy();
             gNorm.Normalize();
             return gNorm;
         }

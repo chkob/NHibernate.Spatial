@@ -1,5 +1,5 @@
-using NetTopologySuite.Geometries;
 using NetTopologySuite.Algorithm.Distance;
+using NetTopologySuite.Geometries;
 using System;
 using System.Globalization;
 
