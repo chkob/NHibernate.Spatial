@@ -17,16 +17,11 @@ namespace Tests.NHibernate.Spatial
             TestConfiguration.Configure(configuration);
         }
 
-        private const string LocalDataPath = @"..\..\..\..\Tests.NHibernate.Spatial.MsSql2008\NtsTestCases\Data\vivid";
+        private const string LocalDataPath = @"../../../../Tests.NHibernate.Spatial.MsSql2008/NtsTestCases/Data/vivid";
 
         protected override string TestSimpleDataPath
         {
             get { return Path.Combine(LocalDataPath, @"TestSimple.xml"); }
-        }
-
-        protected override string TestValidDataPath
-        {
-            get { return Path.Combine(LocalDataPath, @"TestValid.xml"); }
         }
 
         [Test]
